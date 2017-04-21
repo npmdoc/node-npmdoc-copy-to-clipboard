@@ -1,0 +1,160 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/sudodoki/copy-to-clipboard#readme">copy-to-clipboard (v3.0.5)</a>
+</h1>
+<h4>Copy stuff into clipboard using JS with fallbacks</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.copy-to-clipboard">module copy-to-clipboard</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.copy-to-clipboard.copy-to-clipboard">
+            function <span class="apidocSignatureSpan"></span>copy-to-clipboard
+            <span class="apidocSignatureSpan">(text, options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.copy-to-clipboard" id="apidoc.module.copy-to-clipboard">module copy-to-clipboard</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.copy-to-clipboard.copy-to-clipboard" id="apidoc.element.copy-to-clipboard.copy-to-clipboard">
+        function <span class="apidocSignatureSpan"></span>copy-to-clipboard
+        <span class="apidocSignatureSpan">(text, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function copy(text, options) {
+  var debug, message, reselectPrevious, range, selection, mark, success = false;
+  if (!options) { options = {}; }
+  debug = options.debug || false;
+  try {
+    reselectPrevious = deselectCurrent();
+
+    range = document.createRange();
+    selection = document.getSelection();
+
+    mark = document.createElement('span');
+    mark.textContent = text;
+    mark.setAttribute('style', [
+      // reset user styles for span element
+      'all: unset',
+      // prevents scrolling to the end of the page
+      'position: fixed',
+      'top: 0',
+      'clip: rect(0, 0, 0, 0)',
+      // used to preserve spaces and line breaks
+      'white-space: pre',
+      // do not inherit user-select (it may be `none`)
+      '-webkit-user-select: text',
+      '-moz-user-select: text',
+      '-ms-user-select: text',
+      'user-select: text',
+    ].join(';'));
+
+    document.body.appendChild(mark);
+
+    range.selectNode(mark);
+    selection.addRange(range);
+
+    var successful = document.execCommand('copy');
+    if (!successful) {
+      throw new Error('copy command was unsuccessful');
+    }
+    success = true;
+  } catch (err) {
+    debug &amp;&amp; console.error('unable to copy using execCommand: ', err);
+    debug &amp;&amp; console.warn('trying IE specific stuff');
+    try {
+      window.clipboardData.setData('text', text);
+      success = true;
+    } catch (err) {
+      debug &amp;&amp; console.error('unable to copy using clipboardData: ', err);
+      debug &amp;&amp; console.error('falling back to prompt');
+      message = format('message' in options ? options.message : defaultMessage);
+      window.prompt(message, text);
+    }
+  } finally {
+    if (selection) {
+      if (typeof selection.removeRange == 'function') {
+        selection.removeRange(range);
+      } else {
+        selection.removeAllRanges();
+      }
+    }
+
+    if (mark) {
+      document.body.removeChild(mark);
+    }
+    reselectPrevious();
+  }
+
+  return success;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
